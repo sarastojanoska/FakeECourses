@@ -1,0 +1,71 @@
+﻿@model FakeECourses.Models.Course
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Course</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Credits)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Credits)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Semester)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Semester)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Programme)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Programme)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EducationLevel)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EducationLevel)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstTeacher)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.FirstTeacherId != null)
+            {
+                <a asp-controller="Teachers" asp-action="Details" asp-route-id="@Model.FirstTeacherId">
+                    @Html.DisplayFor(model => model.FirstTeacher.FullName)
+                </a>}
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SecondTeacher)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.SecondTeacherId != null)
+            {
+                <a asp-controller="Teachers" asp-action="Details" asp-route-id="@Model.SecondTeacherId">
+                    @Html.DisplayFor(model => model.SecondTeacher.FullName)
+                </a>}
+        </dd>
+        <dt>@Html.DisplayNameFor(model => model.Students)</dt>
+        <dd>@foreach (var student in Model.Students)
+        {<a asp-controller ="Students" asp-action="Details" asp-route-id="@student.StudentId">@student.Student.FullName</a><br />}</dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
