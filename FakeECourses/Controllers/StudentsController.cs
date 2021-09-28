@@ -8,6 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using FakeECourses.Data;
 using FakeECourses.Models;
 using FakeECourses.ViewModel;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace FakeECourses.Controllers
 {
@@ -15,9 +18,13 @@ namespace FakeECourses.Controllers
     {
         private readonly FakeECoursesContext _context;
 
-        public StudentsController(FakeECoursesContext context)
+        private object webHostEnvironment;
+        private IWebHostEnvironment WebHostEnvironment { get; }
+
+        public StudentsController(FakeECoursesContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            WebHostEnvironment = webHostEnvironment;
         }
 
         // GET: Students
@@ -34,6 +41,7 @@ namespace FakeECourses.Controllers
             if (!string.IsNullOrEmpty(id)) 
             {
                 students = students.Where(x => x.StudentId == id); }
+            students = students.Include(m => m.Courses).ThenInclude(m => m.Course);
             var studentVM = new StudentViewModel
             { 
                 StudentIds = new SelectList(await idQuery.ToListAsync()),
@@ -50,6 +58,7 @@ namespace FakeECourses.Controllers
             }
 
             var student = await _context.Student
+                .Include(m => m.Courses).ThenInclude(m =>m.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (student == null)
             {
@@ -89,12 +98,18 @@ namespace FakeECourses.Controllers
                 return NotFound();
             }
 
-            var student = await _context.Student.FindAsync(id);
+            var student = _context.Student.Where(m => m.Id == id).Include(m => m.Courses).First();
             if (student == null)
             {
                 return NotFound();
             }
-            return View(student);
+            MyCoursesStudentsEditViewcs mycourses = new MyCoursesStudentsEditViewcs
+            {
+                Student = student,
+               CoursesList = new MultiSelectList(_context.Course.OrderBy(s => s.Title), "Id","Title"),
+               SelectedCourses = student.Courses.Select(sa=>sa.CourseId)
+            };
+            return View(mycourses);
         }
 
         // POST: Students/Edit/5
@@ -102,9 +117,9 @@ namespace FakeECourses.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StudentId,FirstName,LastName,EnrollmentDate,AcquiredCredits,CurrentSemester,EducationLevel")] Student student)
+        public async Task<IActionResult> Edit(int id, MyCoursesStudentsEditViewcs mycourses)
         {
-            if (id != student.Id)
+            if (id != mycourses.Student.Id)
             {
                 return NotFound();
             }
@@ -113,12 +128,20 @@ namespace FakeECourses.Controllers
             {
                 try
                 {
-                    _context.Update(student);
+                    _context.Update(mycourses.Student);
+                    await _context.SaveChangesAsync();
+                    IEnumerable<int> listCourses = mycourses.SelectedCourses; 
+                    IQueryable<Enrollment> toBeRemoved = _context.Enrollment.Where(s => !listCourses.Contains(s.CourseId) && s.StudentId == id); 
+                    _context.Enrollment.RemoveRange(toBeRemoved); 
+                    IEnumerable<int> existCourses = _context.Enrollment.Where(s => listCourses.Contains(s.CourseId) && s.StudentId == id).Select(s => s.CourseId); 
+                    IEnumerable<int> newCourses = listCourses.Where(s => !existCourses.Contains(s)); 
+                    foreach (int courseId in newCourses) 
+                        _context.Enrollment.Add(new Enrollment{ CourseId = courseId, StudentId = id }); 
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(student.Id))
+                    if (!StudentExists(mycourses.Student.Id))
                     {
                         return NotFound();
                     }
@@ -129,7 +152,7 @@ namespace FakeECourses.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(student);
+            return View(mycourses);
         }
 
         // GET: Students/Delete/5
@@ -141,6 +164,7 @@ namespace FakeECourses.Controllers
             }
 
             var student = await _context.Student
+                .Include(m =>m.Courses).ThenInclude(m=>m.Course)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (student == null)
             {
@@ -161,9 +185,68 @@ namespace FakeECourses.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        //GET: Students/MyCourses/5
+        public async Task<IActionResult> MyCourses(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var student = await _context.Student
+                .Include(m => m.Courses).ThenInclude(m => m.Course)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (student == null)
+            {
+                return NotFound();
+            }
+
+            return View(student);
+        }
+
         private bool StudentExists(int id)
         {
             return _context.Student.Any(e => e.Id == id);
         }
+        private string UploadedFile(IFormFile model)
+        {
+            string uniqueFileName = null;
+            if (model != null)
+            {
+                string uploadsFolder = Path.Combine(WebHostEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + " _ " + Path.GetFileName(model.FileName);
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.CopyTo(fileStream);
+                }
+            }
+            return uniqueFileName;
+        }
+        public IActionResult UploadPic(double? id)
+        {
+            var vm = new StudentPictureEditView
+            {
+                Student = null,
+                ProfileImage = null
+            };
+            return View(vm);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadPic(double? id, IFormFile iffff)
+        {
+            var vm = new StudentPictureEditView
+            {
+                Student = await _context.Student.FindAsync(id),
+                ProfileImage = iffff
+            };
+            string uniqueFileName = UploadedFile(vm.ProfileImage);
+            vm.Student.ProfilePicture = uniqueFileName;
+            _context.Update(vm.Student);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
+

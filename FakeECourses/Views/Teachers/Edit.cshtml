@@ -1,4 +1,4 @@
-﻿@model FakeECourses.Models.Teacher
+﻿@model FakeECourses.ViewModel.MyCoursesTeacherEditView
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,42 +12,54 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Teacher.Id" />
             <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                <label asp-for="Teacher.FirstName" class="control-label"></label>
+                <input asp-for="Teacher.FirstName" class="form-control" />
+                <span asp-validation-for="Teacher.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <label asp-for="Teacher.LastName" class="control-label"></label>
+                <input asp-for="Teacher.LastName" class="form-control" />
+                <span asp-validation-for="Teacher.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Degree" class="control-label"></label>
-                <input asp-for="Degree" class="form-control" />
-                <span asp-validation-for="Degree" class="text-danger"></span>
+                <label asp-for="Teacher.Degree" class="control-label"></label>
+                <input asp-for="Teacher.Degree" class="form-control" />
+                <span asp-validation-for="Teacher.Degree" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AcademicRank" class="control-label"></label>
-                <input asp-for="AcademicRank" class="form-control" />
-                <span asp-validation-for="AcademicRank" class="text-danger"></span>
+                <label asp-for="Teacher.AcademicRank" class="control-label"></label>
+                <input asp-for="Teacher.AcademicRank" class="form-control" />
+                <span asp-validation-for="Teacher.AcademicRank" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="OfficeNumber" class="control-label"></label>
-                <input asp-for="OfficeNumber" class="form-control" />
-                <span asp-validation-for="OfficeNumber" class="text-danger"></span>
+                <label asp-for="Teacher.OfficeNumber" class="control-label"></label>
+                <input asp-for="Teacher.OfficeNumber" class="form-control" />
+                <span asp-validation-for="Teacher.OfficeNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HireDate" class="control-label"></label>
-                <input asp-for="HireDate" class="form-control" />
-                <span asp-validation-for="HireDate" class="text-danger"></span>
+                <label asp-for="Teacher.HireDate" class="control-label"></label>
+                <input asp-for="Teacher.HireDate" class="form-control" />
+                <span asp-validation-for="Teacher.HireDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Courses 1</label>
+                <select asp-for="SelectedCourses1" class="form-control js-example-basic-multiple"
+                        asp-items="Model.CoursesList1"></select>
+                <span asp-validation-for="SelectedCourses1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Courses 2</label>
+                <select asp-for="SelectedCourses2" class="form-control js-example-basic-multiple"
+                        asp-items="Model.CoursesList2"></select>
+                <span asp-validation-for="SelectedCourses2" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
-    </div>
+</div>
 </div>
 
 <div>
@@ -56,4 +68,9 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script src ="https://code.jquery.com/jquery-3.2.1.min.js">
+    </script><scriptsrc ="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js">
+    </script>
+    <script>$(document).ready(function () { $("#SelectedCourses1").select2(); });</script>
+    <script>$(document).ready(function () { $("#SelectedCourses2").select2(); });</script>
 }

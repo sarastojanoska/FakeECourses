@@ -1,0 +1,87 @@
+﻿@model IEnumerable<FakeECourses.Models.Enrollment>
+@{
+    @ViewData["Title"]
+}
+<h3>My course</h3>
+<form asp-controller="Enrollments" asp-action="editMyStatusByCourse">
+    
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Course</th>
+            <th>Semester</th>
+            <th>Grade</th>
+            <th>Year</th>
+            <th>SeminalUrl</th>
+            <th>ProjectUrl</th>
+            <th>Exam points</th>
+            <th>Seminal points</th>
+            <th>Project Points</th>
+            <th>Additional points</th>
+
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+
+                <td>
+                    <a asp-controller="Courses" asp-action="Details" asp-route-id="@item.CourseId">
+
+                        @Html.DisplayFor(modelItem => item.Course.Title)
+
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semester)
+                </td>
+                <td>
+                    @item.Grade
+                </td>
+                <td>
+                    @item.Grade
+                </td>
+                <td>
+                    @item.Year
+                </td>
+                <td>
+                    @item.SeminalUrl
+                </td>
+                <td>
+                    @item.ProjectUrl
+                </td>
+                <td>
+                    @item.ExamPoints
+                </td>
+                <td>
+                    @item.SeminalPoints
+                </td>
+                <td>
+                    @item.ProjectPoints
+                </td>
+                <td>
+                    @item.AdditionalPoints
+                </td>
+
+
+                <td>
+                    <a asp-action="editMyStatusByCourse" asp-route-id="@item.Id">Edit</a>
+                </td>
+                <td>
+                    <a asp-controller="Enrollments" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+
+
+
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-controller="Student" asp-action="MyCourses">Back</a>
+
+</div>

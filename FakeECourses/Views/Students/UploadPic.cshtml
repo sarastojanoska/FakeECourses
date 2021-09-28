@@ -1,0 +1,38 @@
+﻿@model FakeECourses.ViewModel.StudentPictureEditView
+@{
+    @ViewData["Title"]
+}
+<h1>Upload Picture</h1>
+
+<div class="col-md-10 mx-auto py-4">
+    <div class="card">
+        <div class="card-body">
+            <form enctype="multipart/form-data" asp-action="UploadPic">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="ProfileImage" class="control-label"></label>
+                        <div class="custom-file">
+                            <input asp-for="ProfileImage" class="custom-file-input" id="customFile" />
+                            <label class="custom-file-label" for="customFile">Choose File</label>
+                        </div>
+                        <span asp-validation-for="ProfileImage" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="submit" class="btn btn-sm btn-primary rounded-0 text-uppercase" />
+                    <a asp-action="Index" class="btn btn-sm btn-primary rounded-0 text-uppercase"><i class="fas fa-fast-backward"></i>Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+    $(".custom-file-input").on("change", function () {
+        var fileName = $(this).val.split("\\").pop();
+        $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+    });
+    </script>
+
+}

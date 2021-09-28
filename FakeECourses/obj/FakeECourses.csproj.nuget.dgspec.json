@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\SARA\\source\\repos\\FakeECourses\\FakeECourses\\FakeECourses.csproj": {}
+    "D:\\SARA DOKUMENTI\\Desktop\\FakeECourses\\FakeECourses\\FakeECourses.csproj": {}
   },
   "projects": {
-    "C:\\Users\\SARA\\source\\repos\\FakeECourses\\FakeECourses\\FakeECourses.csproj": {
+    "D:\\SARA DOKUMENTI\\Desktop\\FakeECourses\\FakeECourses\\FakeECourses.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\SARA\\source\\repos\\FakeECourses\\FakeECourses\\FakeECourses.csproj",
+        "projectUniqueName": "D:\\SARA DOKUMENTI\\Desktop\\FakeECourses\\FakeECourses\\FakeECourses.csproj",
         "projectName": "FakeECourses",
-        "projectPath": "C:\\Users\\SARA\\source\\repos\\FakeECourses\\FakeECourses\\FakeECourses.csproj",
+        "projectPath": "D:\\SARA DOKUMENTI\\Desktop\\FakeECourses\\FakeECourses\\FakeECourses.csproj",
         "packagesPath": "C:\\Users\\SARA\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\SARA\\source\\repos\\FakeECourses\\FakeECourses\\obj\\",
+        "outputPath": "D:\\SARA DOKUMENTI\\Desktop\\FakeECourses\\FakeECourses\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\SARA\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -26,6 +26,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -37,6 +38,7 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Microsoft.EntityFrameworkCore.SqlServer": {
               "target": "Package",
@@ -54,7 +56,7 @@
             },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
-              "version": "[3.1.2, )"
+              "version": "[3.1.3, )"
             }
           },
           "imports": [
@@ -75,7 +77,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.101\\RuntimeIdentifierGraph.json"
         }
       }
     }

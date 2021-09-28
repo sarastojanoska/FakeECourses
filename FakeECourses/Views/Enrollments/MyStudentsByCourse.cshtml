@@ -1,0 +1,78 @@
+﻿@model IEnumerable<FakeECourses.Models.Enrollment>
+@{
+    @ViewData["Title"]
+}
+<h3>Students enrolled in course</h3>
+<form asp-controller="Enrollments" asp-action="MyStudentsByCourse">
+    <p>
+        Choose a year:
+        <input type="text" name="yearInt" value="@ViewData["currentYear"]" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student</th>
+            <th>Semester</th>
+            <th>Grade</th>
+            <th>Year</th>
+            <th>Exam points</th>
+            <th>Seminal points</th>
+            <th>Project Points</th>
+            <th>Additional points</th>
+            <th>Finish Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="Students" asp-action="Details" asp-route-id="@item.StudentId">
+
+                        @Html.DisplayFor(modelItem => item.Student.FullName)
+
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semester)
+                </td>
+                <td>
+                    @item.Grade
+                </td>
+                <td>
+                    @item.Grade
+                </td>
+                <td>
+                    @item.Year
+                </td>
+                <td>
+                    @item.ExamPoints
+                </td>
+                <td>
+                    @item.SeminalPoints
+                </td>
+                <td>
+                    @item.ProjectPoints
+                </td>
+                <td>
+                    @item.AdditionalPoints
+                </td>
+
+
+                <td>
+                    <a asp-action="editMyStudentsByCourse" asp-route-id="@item.Id">Edit</a>
+                </td>
+                <td>
+                    <a asp-controller="Enrollments" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-controller="Teacher" asp-action="MyCourses" >Back</a>
+   
+</div>
+

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,5 +37,8 @@ namespace FakeECourses.Models
         }
 
         public ICollection<Enrollment> Courses { get; set; }
+
+        [NotMapped]
+        public string ProfilePicture { get; set; }
     }
 }

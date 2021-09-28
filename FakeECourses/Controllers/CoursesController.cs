@@ -198,7 +198,78 @@ namespace FakeECourses.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        // GET: Courses/Edit/5
+        public async Task<IActionResult> EnrollCourse(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var course = _context.Course.Where(m => m.Id == id).Include(m => m.Students).First();
+            if (course == null)
+            {
+                return NotFound();
+            }
+            CourseStudentEditViewModel viewmodel = new CourseStudentEditViewModel
+            {
+                Course = course,
+                StudentList = new MultiSelectList(_context.Student.AsEnumerable().OrderBy(s => s.FullName).ToList(), "Id", "FullName"),
+                SelectedStudents = course.Students.Select(sa => sa.StudentId)
+            };
+            ViewData["FirstTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", course.FirstTeacherId);
+            ViewData["SecondTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", course.SecondTeacherId);
+            return View(viewmodel);
+        }
+
+        // POST: Courses/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EnrollCourse(int id, CourseStudentEditViewModel viewmodel)
+        {
+            if (id != viewmodel.Course.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(viewmodel.Course);
+                    await _context.SaveChangesAsync();
+
+                    IEnumerable<int> listStudents = viewmodel.SelectedStudents;
+                    IQueryable<Enrollment> toBeRemoved = _context.Enrollment.Where(s => !listStudents.Contains(s.StudentId) && s.CourseId == id);
+                    _context.Enrollment.RemoveRange(toBeRemoved);
+
+                    IEnumerable<int> existStudent = _context.Enrollment.Where(s => listStudents.Contains(s.StudentId) && s.CourseId == id).Select(s => s.StudentId);
+                    IEnumerable<int> newStudents = listStudents.Where(s => !existStudent.Contains(s));
+                    foreach (int studentId in newStudents)
+                        _context.Enrollment.Add(new Enrollment { StudentId = studentId, CourseId = id });
+
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CourseExists(viewmodel.Course.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["FirstTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", viewmodel.Course.FirstTeacherId);
+            ViewData["SecondTeacherId"] = new SelectList(_context.Set<Teacher>(), "Id", "FullName", viewmodel.Course.SecondTeacherId);
+            return View(viewmodel);
+        }
+        
         private bool CourseExists(int id)
         {
             return _context.Course.Any(e => e.Id == id);

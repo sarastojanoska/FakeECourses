@@ -1,0 +1,16 @@
+﻿@model FakeECourses.Models.Student
+@{
+    ViewData["Title"] = "MyCourses";
+}
+<h1>My Courses</h1>
+<dt class="col-sm-2">
+    @Html.DisplayNameFor(model => model)
+</dt>
+<dd class="col-sm-10">
+    @foreach (var course in Model.Courses)
+    {
+        <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.CourseId">@course.Course.Title</a><br />
+        <a asp-controller="Enrollments" asp-action="MyStatusByCourse" asp-route-id="@course.Id">See Courses</a><br />
+    }
+
+</dd>
